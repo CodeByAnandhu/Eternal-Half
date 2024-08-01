@@ -7,12 +7,20 @@ module.exports = {
   ],
   theme: {
     extend: {
-      backgroundImage: {
-        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
-        "gradient-conic":
-          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
-      },
+      colors: {
+         eternal:{
+          light: '#FFE1E1',
+          dark: '#E95F62',
+          textcolor:'#DA8686'
+         }
+      }
+    },
+    fontFamily: {
+      dancing: ["Dancing Script", "cursive"],
+      poppins: ["Poppins", "sans-serif"],
     },
   },
-  plugins: [],
+  plugins: [
+    require("tailwindcss-animate"),
+  ],
 };
