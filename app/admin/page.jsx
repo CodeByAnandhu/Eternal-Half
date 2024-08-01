@@ -1,8 +1,9 @@
-import SideBar from "./components/SideBar"
+
+import AdminDashboard from "./components/AdminDashboard"
 function page() {
   return (
     <div>
-      <SideBar/>
+      <AdminDashboard/>
     </div>
   )
 }

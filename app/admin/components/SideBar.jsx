@@ -1,14 +1,11 @@
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import "../../globals.css";
+import { faChartSimple, faCreditCard, faGear, faUser } from "@fortawesome/free-solid-svg-icons";
 function SideBar() {
   return (
-    <div>
-      <aside className="flex gap-10 flex-col w-64 h-screen px-8 py-8 overflow-y-auto bg-white  ">
-        <a>
-          <h1 className="text-2xl font-bold text-eternal-dark font-dancing ">
-            Eternal Half
-          </h1>
-        </a>
-
+    <div className="fixed top-24">
+        {/* Large device sidebar */}
+      <aside className="lg:flex md:flex sm:hidden gap-10 flex-col w-64 h-screen px-8 py-2 overflow-y-auto bg-white  hidden">
         <div className="flex flex-col justify-between flex-1 mt-6">
           <nav className="-mx-3 space-y-6 ">
             <div className="space-y-3 ">
@@ -48,7 +45,7 @@ function SideBar() {
                   viewBox="0 0 24 24"
                   strokeWidth="1.5"
                   stroke="currentColor"
-                  class="size-6"
+                  className="size-6"
                 >
                   <path
                     strokeLinecap="round"
@@ -92,7 +89,7 @@ function SideBar() {
                   viewBox="0 0 24 24"
                   strokeWidth="1.5"
                   stroke="currentColor"
-                  class="size-6"
+                  className="size-6"
                 >
                   <path
                     strokeLinecap="round"
@@ -140,7 +137,7 @@ function SideBar() {
                   viewBox="0 0 24 24"
                   strokeWidth="1.5"
                   stroke="currentColor"
-                  class="size-6"
+                  className="size-6"
                 >
                   <path
                     strokeLinecap="round"
@@ -155,6 +152,49 @@ function SideBar() {
           </nav>
         </div>
       </aside>
+      {/* Mobile Menu */}
+     <section className=" p- bg-W fixed bottom-0 left-0 right-0">    
+        <div className="lg:hidden md:hidden block sm:flex bg-white shadow-lg rounded-tl-3xl  rounded-tr-3xl justify-center items-center">
+            <div className="flex justify-center items-center">
+                <div className="flex-1 group">
+                    <a href="#" className="flex items-end justify-center text-center mx-auto px-4 pt-2 w-full text-gray-400 group-hover:text-eternal-dark">
+                        <span className="flex flex-col justify-center items-center px-1 pt-1 pb-1">
+                            <FontAwesomeIcon icon={faChartSimple}  className="w-6 pt-1 mb-1 block "/>
+                            <span className="block text-xs pb-2">Dashboard</span>
+                            <span className="block w-5 mx-auto h-1 group-hover:bg-eternal-dark rounded-full"></span>
+                        </span>
+                    </a>
+                </div>
+                <div className="flex-1 group">
+                    <a href="#" className="flex items-end justify-center text-center mx-auto px-4 pt-2 w-full text-gray-400 group-hover:text-eternal-dark">
+                        <span className=" px-1 pt-1 pb-1 flex flex-col justify-center items-center">
+                            <FontAwesomeIcon icon={faUser}  className="w-6 pt-1 mb-1 block "/>
+                            <span className="block text-xs pb-2">Users</span>
+                            <span className="block w-5 mx-auto h-1 group-hover:bg-eternal-dark rounded-full"></span>
+                        </span>
+                    </a>
+                </div>
+                <div className="flex-1 group">
+                    <a href="#" className="flex items-end justify-center text-center mx-auto px-4 pt-2 w-full text-gray-400 group-hover:text-eternal-dark">
+                        <span className=" flex flex-col justify-center items-center px-1 pt-1 pb-1">
+                        <FontAwesomeIcon icon={faCreditCard}  className="w-6 pt-1 mb-1 block "/>
+                            <span className="block text-xs pb-2">Payments</span>
+                            <span className="block w-5 mx-auto h-1 group-hover:bg-eternal-dark rounded-full"></span>
+                        </span>
+                    </a>
+                </div>
+                <div className="flex-1 group">
+                    <a href="#" className="flex items-end justify-center text-center mx-auto px-4 pt-2 w-full text-gray-400 group-hover:text-eternal-dark">
+                        <span className=" flex flex-col justify-center items-center px-1 pt-1 pb-1">
+                        <FontAwesomeIcon icon={faGear}  className="w-6 pt-1 mb-1 block "/>
+                            <span className="block text-xs pb-2">Settings</span>
+                            <span className="block w-5 mx-auto h-1 group-hover:bg-eternal-dark rounded-full"></span>
+                        </span>
+                    </a>
+                </div>
+            </div>
+        </div>
+        </section >
     </div>
   );
 }
