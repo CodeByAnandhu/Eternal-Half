@@ -1,5 +1,5 @@
 
-import AdminDashboard from "./components/AdminDashboard"
+import AdminDashboard from "../../../../components/Admin/AdminDashBoard"
 function page() {
   return (
     <div>

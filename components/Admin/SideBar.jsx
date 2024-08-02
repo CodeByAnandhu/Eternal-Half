@@ -1,5 +1,5 @@
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import "../../globals.css";
+import '../../app/globals.css';
 import { faChartSimple, faCreditCard, faGear, faUser } from "@fortawesome/free-solid-svg-icons";
 function SideBar() {
   return (

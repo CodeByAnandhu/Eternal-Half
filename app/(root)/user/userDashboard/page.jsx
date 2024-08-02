@@ -6,7 +6,7 @@ function page() {
           <UserButton showName afterSignOutUrl="/sign-in" />
       <h1>Dashboard</h1>
     </div>
-  ) 
+  )
 }
 
 export default page
