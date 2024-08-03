@@ -1,7 +1,7 @@
 
 import { faBarsStaggered } from "@fortawesome/free-solid-svg-icons"
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
-import '../../globals.css'
+import '../../../app/globals.css'
 
 function Navbar() {
   return (
@@ -17,7 +17,10 @@ function Navbar() {
          <span>Features</span>
          <span>About</span>
          <span>Dating Advise</span>
-         <button className="bg-eternal-dark px-3 py-1 rounded-[50px] text-white">Create</button>
+         <a href="/sign-up">
+           <button className="bg-eternal-dark px-3 py-1 rounded-[50px] text-white">Create</button>
+         </a>
+        
          </div>
       </div>
     </div>
