@@ -1,6 +1,47 @@
+'use client';
+
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-function ageAndgender() {
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
+import { updatePreference } from "@/lib/actions/userForm.action.js";
+import { useRouter } from "next/navigation";
+import { useUser } from "@clerk/nextjs";
+
+function preference() {
+  const router = useRouter();
+  const [preferredGender , setPreferredGender] = useState("");
+  const [preferredAgeFrom , setPreferredAgeFrom] = useState("");
+  const [preferredAgeTo , setPreferredAgeTo] = useState("");
+
+  const { user, isLoaded, isSignedIn } = useUser();
+
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      const { id, } = user;
+    }
+  }, [isLoaded, isSignedIn, user]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if(preferredAgeFrom < 18 || preferredAgeTo < 18 ){
+      toast.error("Age should be greater than 18");
+      return;
+    }
+    try {
+      await updatePreference({
+        userId: user.id,
+        preferredGender,
+        preferredAgeFrom,
+        preferredAgeTo,
+      });
+      toast.success("Updated Info");
+      router.push("/user/forms/interest");
+    } catch (error) {
+      console.error("Error submitting data:", error);
+      toast.error("Error submitting data");
+    }
+  };
   return (
     <div className="w-full h-full">
         <div className="lg:flex md:flex hidden items-center justify-center w-full  p-8">
@@ -66,6 +107,7 @@ function ageAndgender() {
               <div className="w-full px-3 sm:w-1/2 mb-5">
                 <label className="mb-3 block text-base font-medium text-[#07074D]">Preferred Gender</label>
                 <select
+                  onChange={(e) => setPreferredGender(e.target.value)}
                   id="preferredGender"
                   className="bg-white border border-gray-300
                      text-gray-900 text-sm rounded-lg 
@@ -85,17 +127,17 @@ function ageAndgender() {
             </div>
             
 
-            <div className=" flex flex-wrap">
+            <div className=" flex flex-wrap items-center lg:gap-5 md:gap-5">
             <label className="mb-3 block text-base font-medium text-[#07074D]">Preferred Age Range</label>
             <div id="ageRange"  className="flex items-center">
               <div className="relative">
                 
-                <input name="start" type="number" min="18" max="100" className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-5 p-3" placeholder="Enter age from"/>
+                <input onChange={(e)=>setPreferredAgeFrom(e.target.value)}  type="number" min="18" max="100" className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-5 p-3" placeholder="Enter age from"/>
               </div>
               <span className="mx-4 text-gray-500">to</span>
               <div className="relative">
                 
-              <input name="start" type="number" min="18" max="100" className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-5 p-3" placeholder="Enter age to"/>
+              <input onChange={(e)=>setPreferredAgeTo(e.target.value)} type="number" min="18" max="100" className="bg-white border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full px-5 p-3" placeholder="Enter age to"/>
             </div>
             </div>
 
@@ -103,7 +145,7 @@ function ageAndgender() {
 
           
             <div className="w-full  flex justify-end mt-24">
-              <button  className="gap-3 hover:shadow-form rounded-full
+              <button onClick={handleSubmit} className="gap-3 hover:shadow-form rounded-full
                bg-eternal-dark lg:py-4 lg:px-10 md:py-3 
                md:px-8 px-5 py-3 text-center text-base 
                font-semibold text-white outline-none 
@@ -118,4 +160,4 @@ function ageAndgender() {
   );
 }
 
-export default ageAndgender;
+export default preference;

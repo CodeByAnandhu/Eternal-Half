@@ -2,11 +2,34 @@
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { hobbyList } from "../../../../../static/hobby.js";
-import { useState } from "react";
-function ageAndgender() {
+import { useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs";
+import { updateInterest } from "@/lib/actions/userForm.action.js";
+import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { sendQuestionsData } from "@/lib/actions/userForm.action.js";
+
+function AgeAndGender() {
+  const router = useRouter();
   const [inputValue, setInputValue] = useState([]);
   const [suggestions, setSuggestions] = useState([]);
-  const [interests, setInterests] = useState([]);
+  const [intrests, setInterests] = useState([]);
+  const [questions, setQuestions] = useState([]);
+  const [userPickedQuetions, setUserPickedQuetions] = useState([]);
+
+  const { user, isLoaded, isSignedIn } = useUser();
+
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      const { id } = user;
+    }
+  }, [isLoaded, isSignedIn, user]);
+
+  useEffect(() => {
+    sendQuestionsData().then((data) => {
+      setQuestions(data);
+    });
+  }, []);
 
   const handleInputChange = (event) => {
     const value = event.target.value;
@@ -20,10 +43,46 @@ function ageAndgender() {
     }
   };
 
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    if (intrests.length < 3) {
+      toast.error("Please select at least 3 Interests");
+      return;
+    }
+
+    if (userPickedQuetions.length < 3) {
+      toast.error("Please select at least 3 Interests");
+      return; 
+    }
+    
+    try {
+      await updateInterest({
+        userId: user.id,
+        intrests,
+        questions: userPickedQuetions,
+      });
+      toast.success("Updated Info");
+      router.push("/user/forms/profile");
+    } catch (error) {
+      console.error("Error submitting data:", error);
+      toast.error("Error submitting data");
+    }
+  };
+
   const handleSuggestionClick = (suggestion) => {
     setInputValue(suggestion);
-    setInterests([...interests, suggestion]);
+    setInterests([...intrests, suggestion]);
     setSuggestions([]);
+  };
+
+  const handleCheckboxChange = (questionId) => {
+    setUserPickedQuetions((prevSelected) => {
+      if (prevSelected.includes(questionId)) {
+        return prevSelected.filter((id) => id !== questionId);
+      } else {
+        return [...prevSelected, questionId];
+      }
+    });
   };
 
   return (
@@ -59,7 +118,7 @@ function ageAndgender() {
         </li>
         <li className="flex items-center text-gray-400">
           <span className="me-2">6</span>
-          Preference
+          Phone
         </li>
       </ol>
 
@@ -83,10 +142,10 @@ function ageAndgender() {
             <div className="-mx-3 flex flex-wrap">
               <div className="w-full px-3 sm:w-1/2 mb-5">
                 <label className="mb block text-base font-medium text-[#07074D]">
-                  Enter Your Interests
+                  Enter Your Hobbies
                 </label>
                 <p className="text-xs mb-3 text-[#898997d8]">
-                  Enter atleast 3 interest
+                  Enter at least 3 Hobbies
                 </p>
                 <input
                   name="start"
@@ -114,67 +173,43 @@ function ageAndgender() {
                 </ul>
               </div>
             )}
-            {interests.map((interest) => (
-              <span className="text-eternal-dark mr-3 bg-eternal-light px-3 py-1 rounded-xl mb-4">
+            {intrests.map((interest) => (
+              <span
+                key={interest}
+                className="text-eternal-dark mr-3 bg-eternal-light px-3 py-1 rounded-xl mb-4"
+              >
                 {interest}
               </span>
             ))}
 
             <label className="mb block text-base font-medium text-[#07074D]">
-              Answer your thoughts
+              Answer your interests
             </label>
             <div className=" flex flex-wrap mt-4">
-              <div class="grid sm:grid-cols-2 gap-2">
-                <label class="flex p-3 w-full bg-white border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400">
-                  <input
-                    type="checkbox"
-                    class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                  />
-                  <span class="text-sm text-gray-500 ms-3 dark:text-neutral-400">
-                  Do you enjoy outdoor activities?
-                  </span>
-                </label>
-                <label class="flex p-3 w-full bg-white border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400">
-                  <input
-                    type="checkbox"
-                    class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                  />
-                  <span class="text-sm text-gray-500 ms-3 dark:text-neutral-400">
-                  Are you a pet lover?
-                  </span>
-                </label>
-                <label class="flex p-3 w-full bg-white border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400">
-                  <input
-                    type="checkbox"
-                    class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                  />
-                  <span class="text-sm text-gray-500 ms-3 dark:text-neutral-400">
-                  Is a sense of humor important to you in a partner?
-                  </span>
-                </label>
-                <label class="flex p-3 w-full bg-white border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400">
-                  <input
-                    type="checkbox"
-                    class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                  />
-                  <span class="text-sm text-gray-500 ms-3 dark:text-neutral-400">
-                  Do you consider yourself an introvert?
-                  </span>
-                </label>
-                <label class="flex p-3 w-full bg-white border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400">
-                  <input
-                    type="checkbox"
-                    class="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
-                  />
-                  <span class="text-sm text-gray-500 ms-3 dark:text-neutral-400">
-                  Are you a morning person?
-                  </span>
-                </label>
+              <div className="grid sm:grid-cols-2 gap-2">
+                {questions.map((qustion, index) => (
+                  <label
+                    key={index}
+                    className="flex p-3 w-full bg-white border border-gray-200 rounded-lg text-sm focus:border-blue-500 focus:ring-blue-500 dark:bg-neutral-900 dark:border-neutral-700 dark:text-neutral-400"
+                  >
+                    <input
+                      onChange={() => handleCheckboxChange(qustion._id)}
+                      checked={userPickedQuetions.includes(qustion._id)}
+                      value={qustion._id}
+                      type="checkbox"
+                      className="shrink-0 mt-0.5 border-gray-200 rounded text-blue-600 focus:ring-blue-500 disabled:opacity-50 disabled:pointer-events-none dark:bg-neutral-800 dark:border-neutral-700 dark:checked:bg-blue-500 dark:checked:border-blue-500 dark:focus:ring-offset-gray-800"
+                    />
+                    <span className="text-sm text-gray-500 ms-3 dark:text-neutral-400">
+                      {qustion.questionText}
+                    </span>
+                  </label>
+                ))}
               </div>
             </div>
 
             <div className="w-full  flex justify-end mt-8">
               <button
+                onClick={handleSubmit}
                 className="gap-3 hover:shadow-form rounded-full
                bg-eternal-dark lg:py-4 lg:px-10 md:py-3 
                md:px-8 px-5 py-3 text-center text-base 
@@ -191,4 +226,4 @@ function ageAndgender() {
   );
 }
 
-export default ageAndgender;
+export default AgeAndGender;

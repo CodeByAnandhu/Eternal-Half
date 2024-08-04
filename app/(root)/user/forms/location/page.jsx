@@ -1,7 +1,44 @@
+'use client';
+
 import { faArrowRight } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {countryList} from '../../../../../static/countri.js'
-function ageAndgender() {
+import { useEffect, useState } from "react";
+import { useUser } from "@clerk/nextjs";
+import { updateUserLocation } from "@/lib/actions/userForm.action.js";
+import { useRouter } from "next/navigation.js";
+import { toast } from "sonner";
+function location() {
+  const router = useRouter();
+  const [country , setCountry] = useState("");
+  const [state , setState] = useState("");
+  const [city , setCity] = useState("");
+
+  const { user, isLoaded, isSignedIn } = useUser();
+
+  useEffect(() => {
+    if (isLoaded && isSignedIn) {
+      const { id, } = user;
+    }
+  }, [isLoaded, isSignedIn, user]);
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    try {
+      await updateUserLocation({
+        userId: user.id,
+        country,
+        state,
+        city,
+      });
+      toast.success("Updated Info");
+
+      router.push("/user/forms/preference");
+    } catch (error) {
+      console.error("Error submitting data:", error);
+      toast.error("Error submitting data:");
+    }
+  };
   return (
     <div className="w-full h-full">
         <div className="lg:flex md:flex hidden items-center justify-center w-full  p-8">
@@ -59,6 +96,7 @@ function ageAndgender() {
               <div className="w-full px-3 sm:w-1/2 mb-5">
                 <label className="mb-3 block text-base font-medium text-[#07074D]">Country</label>
                 <select
+                  onChange={(e)=>setCountry(e.target.value)}
                   id="countries"
                   className="bg-white border border-gray-300
                      text-gray-900 text-sm rounded-lg 
@@ -69,33 +107,12 @@ function ageAndgender() {
                         px-6 py-3"
                 >
                   <option>Select your Country</option>
-                  {countryList.map((item)=>(<option value={item}>{item}</option>))}
+                  {countryList.map((item)=>(<option key={item} value={item}>{item}</option>))}
                 </select>
               </div>
-              {/* <div className="w-full px-3 sm:w-1/2">
-                      <div className="mb-5">
-                          <label  className="mb-3 block text-base font-medium text-[#07074D]">
-                              Last Name
-                          </label>
-                          <input type="text" name="lName" id="lName" placeholder="Last Name"
-                              className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md" />
-                      </div>
-                  </div> */}
+         
             </div>
-
-            {/* <div className="mb-5">
-              <label className="mb-3 block text-base font-medium text-[#07074D]">
-                How many guest are you bringing?
-              </label>
-              <input
-                type="number"
-                name="guest"
-                id="guest"
-                placeholder="5"
-                min="0"
-                className="w-full appearance-none rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
-              />
-            </div> */}
+         
 
             <div className="-mx-3 flex flex-wrap">
               <div className="w-full px-3 sm:w-1/2">
@@ -104,6 +121,7 @@ function ageAndgender() {
                     State
                   </label>
                   <input
+                    onChange={(e)=>setState(e.target.value)}
                     type="text"
                     name="state"
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
@@ -117,6 +135,7 @@ function ageAndgender() {
                     City
                   </label>
                   <input
+                    onChange={(e)=>setCity(e.target.value)}
                     type="text"
                     name="city"
                     className="w-full rounded-md border border-[#e0e0e0] bg-white py-3 px-6 text-base font-medium text-[#6B7280] outline-none focus:border-[#6A64F1] focus:shadow-md"
@@ -128,7 +147,7 @@ function ageAndgender() {
 
           
             <div className="w-full  flex justify-end mt-24">
-              <button  className="gap-3 hover:shadow-form rounded-full
+              <button  onClick={handleSubmit} className="gap-3 hover:shadow-form rounded-full
                bg-eternal-dark lg:py-4 lg:px-10 md:py-3 
                md:px-8 px-5 py-3 text-center text-base 
                font-semibold text-white outline-none 
@@ -143,4 +162,4 @@ function ageAndgender() {
   );
 }
 
-export default ageAndgender;
+export default location;
